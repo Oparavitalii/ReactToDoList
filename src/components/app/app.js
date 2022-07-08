@@ -76,10 +76,11 @@ onToggleDone = (id) => {
 
   render() {
     const doneCount = this.state.todoData.filter((el) => el.done);
+    const activeCount = this.state.todoData.filter((el) => !el.done);
     
     return (
     <div className="todo-app">
-      <AppHeader toDo={doneCount.length} done={1} />
+      <AppHeader toDo={activeCount.length} done={doneCount.length} />
       <div className="top-panel d-flex">
         <SearchPanel />
         <ItemStatusFilter />
