@@ -40,34 +40,35 @@ onDeleted = (id) => {
   })
 }
 idCount = 100;
-addItem = () => {
+addItem = (label) => {
   this.setState(({todoData}) => {
     console.log(this.idCount);
-    const addElement = this.createTodoItem("New task for done")
+    const addElement = this.createTodoItem(label)
     return {
       todoData: [...todoData,addElement]
     }
   })
 }
+
+onToggleProperty(arr,id,propName) {
+ const idx = arr.findIndex((el) => el.id === id);
+ const oldItem = arr[idx];
+ const newItem = {...oldItem,[propName] : !arr[propName]}
+
+ return [...arr.slice(0,idx),newItem,...arr.slice(idx+1)]
+}
 onToggleImportant = (id) => {
   this.setState(({todoData}) => {
-    const idx = todoData.findIndex((el) => el.id === id)
-    const oldItem = todoData[idx]
-    const newItem = {...oldItem,important:!oldItem.important}
-    const newArray = [...todoData.slice(0,idx),newItem,...todoData.slice(idx+1)]
     return {
-      todoData: newArray
+      todoData : this.onToggleProperty(todoData,id,"important")
     }
   })
 }
 
 onToggleDone = (id) => {
-  this.setState(({todoData}) => {
-    const idx = todoData.findIndex((el) => el.id === id)
-    const oldItem = todoData[idx];
-    const newItem = {...oldItem ,done:!oldItem.done}
+  this.setState(({todoData}) =>{
     return {
-      todoData: [...todoData.slice(0,idx),newItem,...todoData.slice(idx+1)]
+      todoData: this.onToggleProperty(todoData,id,'done')
     }
 
   })
@@ -75,12 +76,11 @@ onToggleDone = (id) => {
 }
 
   render() {
-    const doneCount = this.state.todoData.filter((el) => el.done);
-    const activeCount = this.state.todoData.filter((el) => !el.done);
-    
+    const doneCount = this.state.todoData.filter((el) => el.done).length;
+    const activeCount = this.state.todoData.length - doneCount;
     return (
     <div className="todo-app">
-      <AppHeader toDo={activeCount.length} done={doneCount.length} />
+      <AppHeader toDo={activeCount} done={doneCount} />
       <div className="top-panel d-flex">
         <SearchPanel />
         <ItemStatusFilter />
